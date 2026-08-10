@@ -15,6 +15,26 @@
 
 不要把密码、Token、Cookie、登录态或认证 Header 写入 URL、文档、日志、提交或截图。
 
+## 推送前目录边界
+
+所有远程操作都必须在项目自己的 Git 根目录执行。先运行：
+
+```powershell
+$gitPrefix = (git rev-parse --show-prefix).Trim()
+if ($gitPrefix) { throw "当前目录只是上层仓库的子目录；不得修改上层仓库远程或向同名项目仓库推送" }
+```
+
+若命令显示当前项目是上层工作区仓库的子目录，先在该项目目录建立独立仓库并审查首提交，再配置远程：
+
+```powershell
+git init -b main
+git status --short
+git add --all
+git status --short
+git commit -m "Initial project import"
+```
+
+首提交前必须排除本机 `.env`、登录态、密钥、临时目录和其他敏感配置。不要为了“项目同名远程”覆盖上层工作区的 `origin`、`gitea` 或 `gitea-ext`。
 ## 日常推送
 
 以下脚本推送当前分支到 GitHub，并按网络可达性在两个 Gitea 中只选择一个：
@@ -93,5 +113,6 @@ git ls-remote --heads $giteaRemote $branch
 ```
 
 只检查当前可达的 Gitea。返回 `404` 时先用已认证的 Git 凭据重试；私有仓库对未登录请求可能同样返回 `404`。
+
 
 
