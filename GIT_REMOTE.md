@@ -55,7 +55,7 @@ git ls-remote --heads $giteaRemote $branch
 
 ## 网络与代理
 
-默认**不使用项目级 Git 代理**。先直连测试；不要把旧 Clash 地址、端口或任何代理凭据写入仓库的 `.git/config`。
+默认**不使用项目级 Git 代理**。先直连测试；不要把任何代理地址、端口或凭据写入仓库的 `.git/config`。
 
 ```powershell
 git config --local --unset-all http.proxy 2>$null
@@ -121,6 +121,7 @@ git ls-remote --heads $giteaRemote $branch
 ```
 
 只检查当前可达的 Gitea。返回 `404` 时先用已认证的 Git 凭据重试；私有仓库对未登录请求可能同样返回 `404`。
+
 
 
 
