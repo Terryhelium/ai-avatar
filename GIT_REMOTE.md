@@ -66,6 +66,14 @@ git config --local --unset-all https.proxy 2>$null
 - 在外网：公网 Gitea `gitea-ext` 始终直连；GitHub 也先直连。仅当 GitHub 直连失败时，启动 Karing 的系统代理或 TUN 后重试 `origin`，不要改写某个项目的 Git 代理配置。
 - 禁止继续使用 Clash 的 `localhost:7897` 等历史项目级代理。代理状态变化后直接重试推送，不要把代理 URL 记录到 Git 远程地址或文档。
 
+Git for Windows 不一定读取 Windows 的系统代理。若 Karing 已开启但 GitHub 直连失败，只对该次 GitHub 命令使用 Karing 当前的系统代理端口；不要执行 `git config http.proxy` 或 `git config https.proxy`：
+
+```powershell
+$karingProxy = 'http://127.0.0.1:<Karing 当前系统代理端口>'
+git -c http.proxy=$karingProxy -c https.proxy=$karingProxy push origin $branch
+```
+
+这只是一次性参数，不会保存到项目或全局 Git 配置；`gitea` 和 `gitea-ext` 不使用这组参数。
 可用以下命令先测试当前分支的两个目标：
 
 ```powershell
@@ -113,6 +121,7 @@ git ls-remote --heads $giteaRemote $branch
 ```
 
 只检查当前可达的 Gitea。返回 `404` 时先用已认证的 Git 凭据重试；私有仓库对未登录请求可能同样返回 `404`。
+
 
 
 
