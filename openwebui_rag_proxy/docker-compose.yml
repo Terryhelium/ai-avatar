@@ -1,0 +1,55 @@
+services:
+  ragflow-openai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ragflow-openai
+    restart: unless-stopped
+    environment:
+      - OPENAI_PROXY_API_KEY=ragflow-proxy-local
+      - MODEL_ID=ragflow-qa
+      - RAGFLOW_URL=http://10.19.26.148:19003/api/v1/retrieval
+      - RAGFLOW_TOKEN=ragflow-r22LZYA19HAuFNG88jALNJ_x9_-gKhQYnXbI0WIeKRw
+      - RAGFLOW_DATASET_IDS=2f88b8604e7a11f1aff3ed7aeaa9f60b
+      - RAGFLOW_TOP_K=3
+      - OLLAMA_URL=http://10.19.26.153:11434/v1/chat/completions
+      - OLLAMA_MODEL=qwen2.5:7b
+      - REQUEST_TIMEOUT_SECONDS=60
+    networks:
+      - public_webui
+
+  open-webui-public:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui-public
+    restart: unless-stopped
+    depends_on:
+      - ragflow-openai
+    ports:
+      - "3001:8080"
+    environment:
+      - WEBUI_AUTH=false
+      - ENABLE_OLLAMA_API=false
+      - ENABLE_OPENAI_API=true
+      - ENABLE_DIRECT_CONNECTIONS=false
+      - ENABLE_EVALUATION_ARENA_MODELS=false
+      - BYPASS_EMBEDDING_AND_RETRIEVAL=true
+      - RAG_EMBEDDING_ENGINE=ollama
+      - RAG_EMBEDDING_MODEL=bge-m3
+      - RAG_OLLAMA_BASE_URL=http://10.19.26.153:11434
+      - OPENAI_API_BASE_URLS=http://ragflow-openai:8890/v1
+      - OPENAI_API_KEYS=ragflow-proxy-local
+      - DEFAULT_MODELS=ragflow-qa
+      - WEBUI_NAME=NBDAG知识库问答
+    volumes:
+      - ./data:/app/backend/data
+    networks:
+      - public_webui
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/config >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  public_webui:

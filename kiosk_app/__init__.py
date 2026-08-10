@@ -1,0 +1,1 @@
+"""Reception kiosk application package."""

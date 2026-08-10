@@ -1,0 +1,10 @@
+logs/
+.tmp/
+.claude/settings.local.json
+configs/*.env
+*.log
+*.pyc
+__pycache__/
+*.wav
+*.pcm
+.env

@@ -1,0 +1,9 @@
+services:
+  reception-kiosk:
+    build: .
+    image: reception-kiosk:local
+    env_file:
+      - .env
+    ports:
+      - "18080:18080"
+    restart: unless-stopped

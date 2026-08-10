@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>档案馆接待助手</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <section class="stage">
+        <div class="stage-topbar">
+          <div class="stage-heading">
+            <h1>档案馆智能接待</h1>
+          </div>
+          <div class="service-pill">内网部署 · 稳定运行</div>
+          <div class="topbar-actions">
+            <button class="debug-toggle" type="button" id="signalToggle">调试</button>
+            <button class="voice-button top-voice-button" type="button" id="recordButton">
+              <span id="recordButtonLabel">点击开始录音</span>
+              <small id="recordStatusText">结束录音后自动送入 FunASR 和知识库问答</small>
+            </button>
+            <button class="secondary-action" type="button" id="avatarConnectButton">
+              连接数字人
+              <small id="avatarStatusText">当前未连接</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel avatar-frame">
+          <div class="avatar-aura"></div>
+          <div class="avatar-screen">
+            <video id="avatarVideo" class="avatar-video" autoplay playsinline></video>
+            <audio id="avatarAudio" autoplay></audio>
+            <div class="avatar-overlay" id="avatarOverlay">
+              <span id="avatarHint" class="avatar-hint-sr" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel console">
+        <div class="console-header">
+          <div>
+            <h2>文字调试面板</h2>
+          </div>
+          <button id="stopAudioButton" class="quiet-button" type="button">停止播报</button>
+        </div>
+
+        <div class="signal-card compact">
+          <div class="signal-note">连接状态</div>
+          <div class="signal-body" id="signalBody">
+            <div class="service-strip connection-status-list" id="serviceGrid"></div>
+          </div>
+        </div>
+
+        <div class="signal-card compact">
+          <div class="signal-note">正式回答</div>
+          <div class="answer-preview" id="answerPreview">待返回</div>
+        </div>
+
+        <div class="signal-card compact">
+          <div class="signal-note">回答来源</div>
+          <div class="source-status" id="sourceStatusText">待查询</div>
+          <div class="source-chunks" id="sourceChunks"></div>
+        </div>
+
+        <section class="transcript" id="transcript"></section>
+
+        <section class="composer">
+          <form id="chatForm">
+            <label class="composer-label" for="questionInput">调试提问</label>
+            <textarea
+              id="questionInput"
+              name="question"
+              rows="3"
+              maxlength="4000"
+              placeholder="仅供现场调试，例如：今天开放到几点？"
+              required
+            ></textarea>
+            <div class="composer-actions">
+              <button class="primary-button" type="submit" id="submitButton">发送测试问题</button>
+            </div>
+          </form>
+          <div class="status-row">
+            <span id="statusText">待命中</span>
+            <span id="timingsText"></span>
+          </div>
+        </section>
+      </aside>
+
+      <div class="guide-bar">
+        推荐走 HTTPS 入口后直接录音提问。文字输入仍保留为现场调试和嘈杂环境兜底。
+      </div>
+    </div>
+
+    <template id="messageTemplate">
+      <article class="message">
+        <div class="message-role"></div>
+        <div class="message-content"></div>
+      </article>
+    </template>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
