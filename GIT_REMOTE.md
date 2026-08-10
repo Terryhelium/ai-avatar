@@ -69,7 +69,7 @@ git config --local --unset-all https.proxy 2>$null
 Git for Windows 不一定读取 Windows 的系统代理。若 Karing 已开启但 GitHub 直连失败，只对该次 GitHub 命令使用 Karing 当前的系统代理端口；不要执行 `git config http.proxy` 或 `git config https.proxy`：
 
 ```powershell
-$karingProxy = 'http://127.0.0.1:<Karing 当前系统代理端口>'
+$karingProxy = 'http://127.0.0.1:<Karing 当前可用的 HTTP 或混合代理端口>'
 git -c http.proxy=$karingProxy -c https.proxy=$karingProxy push origin $branch
 ```
 
@@ -121,6 +121,7 @@ git ls-remote --heads $giteaRemote $branch
 ```
 
 只检查当前可达的 Gitea。返回 `404` 时先用已认证的 Git 凭据重试；私有仓库对未登录请求可能同样返回 `404`。
+
 
 
 
